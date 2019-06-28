@@ -79,20 +79,24 @@ class Menu(object):
 
     # TODO: Print codes that can actually be used to order items
     def display(self):
+        menu = ''
         def print_category(category, depth=1):
             indent = "  " * (depth + 1)
+            cat = ''
             if len(category.products) + len(category.subcategories) > 0:
-                print(indent + category.name)
+                cat += f'\n{indent}{category.name}'
                 for subcategory in category.subcategories:
-                    print_category(subcategory, depth + 1)
+                    cat += print_category(subcategory, depth + 1)
                 for product in category.products:
-                    print(indent + "  [%s]" % product.code, product.name)
-        print("************ Coupon Menu ************")
-        print_category(self.root_categories['Coupons'])
-        print("\n************ Preconfigured Menu ************")
-        print_category(self.root_categories['PreconfiguredProducts'])
-        print("\n************ Regular Menu ************")
-        print_category(self.root_categories['Food'])
+                    x = self.search(Name=product.name)
+                    if x is not None:
+                        cat += f'\n{indent}  {x}'
+            return cat
+        menu += "**** Preconfigured Menu ****"
+        menu += print_category(self.root_categories['PreconfiguredProducts'])
+        menu += "\n**** Regular Menu ****"
+        menu += print_category(self.root_categories['Food'])
+        return menu
 
     # TODO: Find more pythonic way to format the menu
     # TODO: Format the menu after the variants have been filtered
@@ -103,9 +107,16 @@ class Menu(object):
         for v in self.variants.values():
             v['Toppings'] = dict(x.split('=', 1) for x in v['Tags']['DefaultToppings'].split(',') if x)
             if all(y in v.get(x, '') for x, y in conditions.items()):
-                print(v['Code'], end=' ')
-                print(v['Name'], end=' ')
-                print('$' + v['Price'])
-                #print(v['SizeCode'], end=' ')
-                #print(v['ProductCode'], end=' ')
-                #print(v['Toppings'])
+                return f"[{v['Code']}] {v['Name']} ${v['Price']}"
+
+    def verify(self, code):
+        x=True
+        try:
+            item = self.variants[code]
+            item.update(ID=1, isNew=True, Qty=1, AutoRemove=False)
+        except:
+            x=False
+        if x:
+            return item
+        else:
+            return False
