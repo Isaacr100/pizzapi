@@ -56,5 +56,6 @@ class Address(object):
     def closest_store(self, service='Delivery'):
         stores = self.nearby_stores(service=service)
         if not stores:
-            raise Exception('No local stores are currently open')
-        return stores[0]
+            return False
+        else:
+            return stores[0]
