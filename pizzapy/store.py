@@ -58,6 +58,6 @@ class StoreLocator(object):
     def find_closest_store_to_customer(customer, service='Delivery'):
         stores = StoreLocator.nearby_stores(customer.address, service=service)
         if not stores:
-            raise Exception('No local stores are currently open')
-        return stores[0]
-
+            return False
+        else:
+            return stores[0]
