@@ -1,6 +1,8 @@
 pizzapy
 =======
 
+This is a fork of Jarvis Johnson's fork of gamagori's pizzapy python api I've modified a little for my pizza ordering discord bot
+
 Disclaimer
 -----------
 This is my fork of https://github.com/gamagori/pizzapi
